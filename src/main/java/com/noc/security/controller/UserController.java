@@ -1,11 +1,13 @@
 package com.noc.security.controller;
 
-import com.noc.security.repository.UserRepository;
+import com.noc.security.service.UserService;
 import com.noc.security.user.User;
+import com.noc.security.user.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -13,41 +15,36 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @PostMapping
-    public User create(@RequestBody User user) {
-        return user;
+    public UserInfo create(@RequestBody @Validated UserInfo userInfo) {
+        return userService.create(userInfo);
     }
 
     @PutMapping("/{id}")
-    public User update(@RequestBody User user) {
-        return user;
+    public UserInfo update(@RequestBody UserInfo userInfo) {
+        return userService.update(userInfo);
     }
 
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-
+        userService.delete(id);
     }
 
     @GetMapping("/{id}")
-    public User get(@PathVariable Long id) {
-        return new User();
+    public UserInfo get(@PathVariable Long id, HttpServletRequest request) {
+        User user = (User) request.getAttribute("user");
+        if (user == null || !user.getId().equals(id)) {
+            throw new RuntimeException("身份认证信息异常，获取用户信息失败");
+        }
+        return userService.get(id);
     }
 
-    /**
-     * http://localhost:8080/users?name=' or 1=1 or name=' 注入攻击
-     */
     @GetMapping
-    public List<User> query(String name) {
-        String sql = "select id,name from user where name='" + name + "'";
-        List data = jdbcTemplate.queryForList(sql);
-
-        return userRepository.findByName(name);
+    public List<UserInfo> query(String name) {
+        return userService.query(name);
     }
 
 }
