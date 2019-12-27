@@ -11,8 +11,8 @@ spring:
     # 生产不能这样使用
     generate-ddl: true
     show-sql: true
-server:
-  ssl:
-    key-store: classpath:jarvan.key
-    key-store-password: qwer1234
-    key-password: qwer1234
+#server:
+#  ssl:
+#    key-store: classpath:jarvan.key
+#    key-store-password: qwer1234
+#    key-password: qwer1234

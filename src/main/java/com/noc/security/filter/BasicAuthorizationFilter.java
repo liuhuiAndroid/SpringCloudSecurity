@@ -3,8 +3,10 @@ package com.noc.security.filter;
 import com.lambdaworks.crypto.SCryptUtil;
 import com.noc.security.repository.UserRepository;
 import com.noc.security.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,7 +20,9 @@ import java.io.IOException;
 /**
  * HttpBasic认证
  */
+@Slf4j
 @Component
+@Order(2)
 public class BasicAuthorizationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -27,6 +31,7 @@ public class BasicAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        log.info("BasicAuthorizationFilter#doFilterInternal");
         String authHeader = request.getHeader("Authorization");
         if (StringUtils.isNotBlank(authHeader)) {
             String token64 = StringUtils.substringAfter(authHeader, "Basic ");
