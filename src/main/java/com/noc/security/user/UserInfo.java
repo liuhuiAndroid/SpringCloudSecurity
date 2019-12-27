@@ -10,7 +10,7 @@ public class UserInfo {
 
     private Long id;
 
-    @NotBlank(message = "昵称不能为空")
+    // @NotBlank(message = "昵称不能为空")
     private String name;
 
     // 框架层面的校验

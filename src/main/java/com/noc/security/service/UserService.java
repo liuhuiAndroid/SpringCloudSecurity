@@ -16,4 +16,5 @@ public interface UserService {
 
     List<UserInfo> query(String name);
 
+    UserInfo login(UserInfo userInfo);
 }

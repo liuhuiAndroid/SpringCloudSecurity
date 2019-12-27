@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -47,4 +48,19 @@ public class UserController {
         return userService.query(name);
     }
 
+    /**
+     * 测试：http://localhost:8080/users/login?username=qwer&password=1234
+     */
+    @GetMapping("/login")
+    public void login(@Validated UserInfo userInfo, HttpServletRequest request) {
+        UserInfo newUserInfo = userService.login(userInfo);
+        // 登录服务验证用户密码后，生成一个有时效的sessionId，同时在内存中创建一个空间（session）来存放与sessionId相关的信息
+        // 返回一个Set-Cookie的header，将sessionId存入浏览器
+        HttpSession httpSession = request.getSession(false);
+        if(httpSession != null){
+            // 防止Session Fixation攻击
+            httpSession.invalidate();
+        }
+        httpSession.setAttribute("user", newUserInfo);
+    }
 }

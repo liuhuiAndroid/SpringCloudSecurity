@@ -2,6 +2,7 @@ package com.noc.security.filter;
 
 import com.noc.security.user.User;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,23 +19,28 @@ import javax.servlet.http.HttpServletResponse;
 @Order(4)
 public class AclInterceptor extends HandlerInterceptorAdapter {
 
+    // 不需要身份认证的请求
+    private String[] permitUrls = new String[]{"/users/login"};
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("4.访问控制");
         boolean result = true;
-        User user = (User) request.getAttribute("user");
-        if (user == null) {
-            response.setContentType("text/plain");
-            response.getWriter().write("need authentication");
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            result = false;
-        } else {
-            String method = request.getMethod();
-            if(!user.hasPermission(method)){
+        if (!ArrayUtils.contains(permitUrls, request.getRequestURI())) {
+            User user = (User) request.getAttribute("user");
+            if (user == null) {
                 response.setContentType("text/plain");
-                response.getWriter().write("forbidden");
+                response.getWriter().write("need authentication");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 result = false;
+            } else {
+                String method = request.getMethod();
+                if (!user.hasPermission(method)) {
+                    response.setContentType("text/plain");
+                    response.getWriter().write("forbidden");
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    result = false;
+                }
             }
         }
         return result;
