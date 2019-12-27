@@ -1,6 +1,7 @@
 package com.noc.security.filter;
 
 import com.noc.security.user.User;
+import com.noc.security.user.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.annotation.Order;
@@ -27,15 +28,15 @@ public class AclInterceptor extends HandlerInterceptorAdapter {
         log.info("4.访问控制");
         boolean result = true;
         if (!ArrayUtils.contains(permitUrls, request.getRequestURI())) {
-            User user = (User) request.getAttribute("user");
-            if (user == null) {
+            UserInfo userInfo = (UserInfo) request.getSession().getAttribute("user");
+            if (userInfo == null) {
                 response.setContentType("text/plain");
                 response.getWriter().write("need authentication");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 result = false;
             } else {
                 String method = request.getMethod();
-                if (!user.hasPermission(method)) {
+                if (!userInfo.hasPermission(method)) {
                     response.setContentType("text/plain");
                     response.getWriter().write("forbidden");
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());

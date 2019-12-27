@@ -36,8 +36,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserInfo get(@PathVariable Long id, HttpServletRequest request) {
-        User user = (User) request.getAttribute("user");
-        if (user == null || !user.getId().equals(id)) {
+        UserInfo userInfo = (UserInfo) request.getSession().getAttribute("user");
+        if (userInfo == null || !userInfo.getId().equals(id)) {
             throw new RuntimeException("身份认证信息异常，获取用户信息失败");
         }
         return userService.get(id);
@@ -57,10 +57,15 @@ public class UserController {
         // 登录服务验证用户密码后，生成一个有时效的sessionId，同时在内存中创建一个空间（session）来存放与sessionId相关的信息
         // 返回一个Set-Cookie的header，将sessionId存入浏览器
         HttpSession httpSession = request.getSession(false);
-        if(httpSession != null){
+        if (httpSession != null) {
             // 防止Session Fixation攻击
             httpSession.invalidate();
         }
         httpSession.setAttribute("user", newUserInfo);
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request) {
+        request.getSession().invalidate();
     }
 }
