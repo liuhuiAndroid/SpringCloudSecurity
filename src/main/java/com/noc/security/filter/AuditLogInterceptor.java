@@ -3,7 +3,9 @@ package com.noc.security.filter;
 import com.noc.security.log.AuditLog;
 import com.noc.security.repository.AuditLogRepository;
 import com.noc.security.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -14,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * TODO HandlerInterceptorAdapter
  */
+@Slf4j
 @Component
+@Order(3)
 public class AuditLogInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
@@ -22,6 +26,7 @@ public class AuditLogInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("3.审计日志");
         AuditLog auditLog = new AuditLog();
         auditLog.setMethod(request.getMethod());
         auditLog.setPath(request.getRequestURI());

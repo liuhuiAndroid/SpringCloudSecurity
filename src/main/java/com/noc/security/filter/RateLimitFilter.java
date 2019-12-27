@@ -29,7 +29,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("RateLimitFilter#doFilterInternal");
+        log.info("1.限流");
         if (rateLimiter.tryAcquire()) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } else {
