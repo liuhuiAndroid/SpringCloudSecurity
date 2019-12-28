@@ -61,33 +61,33 @@ public class OAuth2AuthServerConfig extends AuthorizationServerConfigurerAdapter
         clients.jdbc(dataSource);
 
         // 方案一：放在内存中 过时
-        clients.inMemory()
-                // 声明客户端应用
-                .withClient("orderApp")
-                // 客户端应用密码，需要加密
-                .secret(passwordEncoder.encode("qwer1234"))
-                // 权限
-                .scopes("read", "write")
-                // token有效期
-                .accessTokenValiditySeconds(36000)
-                // 可以访问的资源服务器
-                .resourceIds("order-server")
-                // 授权类型
-                .authorizedGrantTypes("password")
-
-                .and()
-                // 声明客户端应用
-                .withClient("orderService")
-                // 客户端应用密码，需要加密
-                .secret(passwordEncoder.encode("qwer1234"))
-                // 权限
-                .scopes("read")
-                // token有效期
-                .accessTokenValiditySeconds(36000)
-                // 可以访问的资源服务器
-                .resourceIds("order-server")
-                // 授权类型
-                .authorizedGrantTypes("password");
+//        clients.inMemory()
+//                // 声明客户端应用
+//                .withClient("orderApp")
+//                // 客户端应用密码，需要加密
+//                .secret(passwordEncoder.encode("qwer1234"))
+//                // 权限
+//                .scopes("read", "write")
+//                // token有效期
+//                .accessTokenValiditySeconds(36000)
+//                // 可以访问的资源服务器
+//                .resourceIds("order-server")
+//                // 授权类型
+//                .authorizedGrantTypes("password")
+//
+//                .and()
+//                // 声明客户端应用
+//                .withClient("orderService")
+//                // 客户端应用密码，需要加密
+//                .secret(passwordEncoder.encode("qwer1234"))
+//                // 权限
+//                .scopes("read")
+//                // token有效期
+//                .accessTokenValiditySeconds(36000)
+//                // 可以访问的资源服务器
+//                .resourceIds("order-server")
+//                // 授权类型
+//                .authorizedGrantTypes("password");
     }
 
     @Override

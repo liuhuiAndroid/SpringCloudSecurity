@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: server-gateway
+  datasource:
+    # 不能使用root用户
+    url: jdbc:mysql://106.14.239.125:3306/noc-security?characterEncoding=utf8
+    username: root
+    password: qwer1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    generate-ddl: true
+    show-sql: true
+
+zuul:
+  routes:
+    token:
+      url: http://localhost:9090
+    order:
+      url: http://localhost:9080
+  # 敏感头设置为空
+  sensitive-headers:
+  ratelimit:
+    enabled: true
+    repository: JPA
+    default-policy-list:
+      - limit: 1
+        quota: 1
+        refresh-interval: 10
+        type:
+          - url
+          - httpmethod
+server:
+  port: 9070
